@@ -1,0 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=Exo:wght@500;600;700&family=Titillium+Web:wght@300;400;600&display=swap");
+@import "../node_modules/@syncfusion/ej2/material-dark.css";
+*::before,
+*::after {
+  box-sizing: border-box;
+  width: 100%;
+}
+html,
+body {
+  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: auto;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: "Titillium Web";
+  font-weight: "400";
+  background: #3c3c3c;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.user-drag {
+  -webkit-user-drag: none;
+}
+.btn-xs {
+  @apply font-medium text-sm inline-flex items-center justify-center border border-transparent rounded leading-5 shadow-sm transition duration-150 ease-in-out;
+}
