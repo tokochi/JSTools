@@ -1,16 +1,14 @@
 import "./App.css"
-import ListboxContainer from "./component/ListboxContainer";
+import Listbox from "./component/Listbox";
 import Sidebar from './component/Sidebar';
-import Store from "electron-store";
-// import { useStore } from "./contexts/Store";
+import SubListBox from "./component/SubListBox";
+
 function App() {
-  
-  const store = new Store();
   return (
     <div  className="flex relative">
       <Sidebar />
-      <ListboxContainer />
-
+      <Listbox />
+      <SubListBox />
     </div>
   );
 }

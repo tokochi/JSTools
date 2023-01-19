@@ -3,20 +3,30 @@ import { create } from "zustand";
 const { ipcRenderer } = require("electron");
 import add from "../data/icons/addcircle.png";
 import Store from "electron-store";
+import { v4 as uuidv4 } from "uuid";
 
 const store = new Store();
-if (store?.get("sidebarIcons")==null){store?.set("sidebarIcons",[{ name: "new", path: add, listboxItems: [{ type: "clip", tooltip: "tooltip", clip: "clip", name: "new", path: add }] }])} 
+if (store?.get("sidebarIcons")==null){store?.set("sidebarIcons", [{ id: uuidv4(), name: "new", path: add, listboxItems: [] }]);} 
 //store?.delete("sidebarIcons");
-export const useStore = create((set, get) => ({
-  sidebarIcons: store?.get("sidebarIcons") || [{ name: "new", path: add, listboxItems: [{ type: "clip", tooltip: "tooltip", clip: "clip", name: "new", path: add }] }],
+export const useStore = create((set) => ({
+  sidebarIcons: store?.get("sidebarIcons"),
   updateSidebarIcons: () => set(() => ({ sidebarIcons: store?.get("sidebarIcons") })),
   setSidebarIcons: (list) => store?.set("sidebarIcons", list),
-
-  
-  selectedItem: { name: "", icon: "", type: "", folder: "", path: "", clip: "", tooltip: "" },
-  setSelectedclip: ({ name, type, clip, tooltip }) => set((state) => ({ selectedItem: { ...state.selectedItem, name, type, clip, tooltip } })),
-
+  setSidebarList: (list, idIcon) => {
+    store?.set(
+      "sidebarIcons",
+      store?.get("sidebarIcons").map((icon) => (icon.id === idIcon ? { ...icon, listboxItems: list } : icon))
+    );
+  },
+  setSidebarSubList: (list, idIcon) => {
+    store?.set(
+      "sidebarIcons",
+      store?.get("sidebarIcons").map((icon) => (icon.id === idIcon ? { ...icon, listboxItems: list } : icon))
+    );
+  },
+  selectedItem: { idIcon: "", idList: "", idSubList: "", name: "", icon: "", type: "", folder: "", path: "", clipName: "", clip: "", tooltip: "" },
   dropdownOpen: false,
+  type: "",
 }));
 
 // Romove all isteners

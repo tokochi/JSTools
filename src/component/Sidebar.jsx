@@ -8,17 +8,31 @@ import PopupDialog from "./PopupDialog";
 const Sidebar = () => {
   const data = useStore((state) => state.sidebarIcons);
   let listboxRef = {};
-  //const setSelectedItem = useStore((state) => state.setSelectedItem);
-  // console.log(useStore.getState().selectedItem);
-  const [type, setType] = useState("");
-  const listBoxTemplate = ({ path, name }) => {
+  const listBoxTemplate = ({ path, name, id }) => {
     return (
-      <div icon-value={name} icon-path={path} className="flex flex-col items-center px-2">
-        <img icon-value={name} icon-path={path} className="user-drag   h-[45px] my-1" src={path} alt={name} />
+      <div
+        onContextMenu={(e) => {
+          e.preventDefault(), leftClickItem(name, id, path);
+        }}
+        onClick={() => {
+          rightClickItem(name, id, path);
+        }}
+        className="flex flex-col items-center px-2"
+      >
+        <img
+          onContextMenu={(e) => {
+            e.preventDefault(), leftClickItem(name, id, path);
+          }}
+          onClick={() => {
+            rightClickItem(name, id, path);
+          }}
+          className="user-drag   h-[45px] my-1"
+          src={path}
+          alt={name}
+        />
       </div>
     );
   };
-
   const menuItems = [
     {
       text: "Add Icon",
@@ -37,52 +51,30 @@ const Sidebar = () => {
   function droppingItem() {
     useStore.getState().setSidebarIcons(listboxRef.getDataList());
   }
-
-  function leftClickItem(args) {
+  function leftClickItem(name, id, path) {
+    useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idIcon: id, isSub: false, icon: name, path, type: "icon" } });
     console.log(useStore.getState().selectedItem);
-    useStore.setState({
-      selectedItem: {
-        ...useStore.getState().selectedItem,
-        icon: args.event.target.getAttribute("icon-value"),
-        path: args.event.target.getAttribute("icon-path"),
-        type: "icon",
-      },
-    });
   }
   // ********* contextMenu ************
+  function rightClickItem(name, id, path) {
+    useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idIcon: id, isSub: false, icon: name, path, type: "icon" } });
+  }
   function contextMenuClick(args) {
     switch (args.item.text) {
       case "Add Icon":
-        setType("Add Icon");
-        useStore.setState({ dropdownOpen: true });
+        useStore.setState({ type: "Add Icon", dropdownOpen: true });
         break;
       case "Edit":
-        setType("Edit Icon");
-        useStore.setState({ dropdownOpen: true });
+        useStore.setState({ type: "Edit Icon", dropdownOpen: true });
         break;
       case "Remove":
-        setType("Remove Icon");
-        useStore.setState({ dropdownOpen: true });
+        useStore.setState({ type: "Remove Icon", dropdownOpen: true });
         break;
     }
   }
-  function rightClickItem(args) {
-    useStore.setState({ dropdownOpen: false });
-    useStore.setState({
-      selectedItem: {
-        ...useStore.getState().selectedItem,
-        icon: args.event.target.getAttribute("icon-value"),
-        path: args.event.target.getAttribute("icon-path"),
-        type: "icon",
-      },
-    });
-  }
   //  *********************************
-
   return (
-    <div
-      className=" h-screen bg-[#202225] w-[70px] overflow-x-hidden px-1"
-    >
+    <div className=" h-screen bg-[#202225] w-[70px] overflow-x-hidden px-1">
       <div className="" id="listbox-sidebar">
         <ListBoxComponent
           ref={(g) => (listboxRef = g)}
@@ -91,14 +83,13 @@ const Sidebar = () => {
           fields={{ value: "name", text: "name" }}
           allowDragAndDrop
           itemTemplate={listBoxTemplate}
-          change={leftClickItem}
           drop={droppingItem}
         />
       </div>
       <div id="contextmenu-sidebar">
-        <ContextMenuComponent target="#listbox-sidebar" items={menuItems} beforeOpen={rightClickItem} select={contextMenuClick} animationSettings={{ duration: 500, effect: "FadeIn" }} />
+        <ContextMenuComponent target="#listbox-sidebar" items={menuItems}  select={contextMenuClick} animationSettings={{ duration: 500, effect: "FadeIn" }} />
       </div>
-      <PopupDialog editType={type} />
+      <PopupDialog  />
     </div>
   );
 };
