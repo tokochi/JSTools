@@ -4,52 +4,101 @@ import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
 import { useStore } from "../contexts/Store";
 import folder from "../data/icons/folder.png";
 import PopupDialog from "./PopupDialog";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 const Listbox = () => {
   const selectedItem = useStore((state) => state.selectedItem);
   const data = useStore((state) => state.sidebarIcons)?.find((item) => item.id === selectedItem.idIcon)?.listboxItems || [];
   const selectedItemClicked = useStore((state) => state.selectedItem.icon !== "");
   let listboxRef = {};
-
-  const listBoxTemplate = ({ path, name, type, clip, tooltip, id}) => {
+  const listBoxTemplate = ({ path, name, type, clip, tooltip, id }) => {
     return (
-      <div
-        onContextMenu={(e) => {
-          e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
-        }}
-        onClick={() => {
-          rightClickItem(name, type, clip, tooltip, id);
-        }}
-        className="flex gap-2 items-center px-2"
-      >
-        <img
-          onContextMenu={(e) => {
-            e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
-          }}
-          onClick={() => {
-            rightClickItem(name, type, clip, tooltip, id);
-          }}
-          id={id}
-          className="user-drag h-[20px]"
-          src={type === "folder" ? folder : path}
-          alt={name}
-        />
-        <span
-          onContextMenu={(e) => {
-            e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
-          }}
-          onClick={() => {
-            rightClickItem(name, type, clip, tooltip, id);
-            navigator.clipboard.writeText(clip);
-          }}
-          className=""
-        >
-          {name}
-        </span>
-      </div>
+      <>
+        {type === "clip" && tooltip.length > 0 ? (
+          <TooltipComponent
+            content={tooltip}
+            animation={{
+              open: { effect: "ZoomIn", duration: 200 },
+              close: { effect: "ZoomOut", duration: 0 },
+            }}
+            position="RightCenter"
+          >
+            <div
+              onContextMenu={(e) => {
+                e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+              }}
+              onClick={() => {
+                rightClickItem(name, type, clip, tooltip, id);
+              }}
+              className="flex gap-2 items-center px-2 py-1 hover:bg-slate-700"
+            >
+              <img
+                onContextMenu={(e) => {
+                  e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+                }}
+                onClick={() => {
+                  rightClickItem(name, type, clip, tooltip, id);
+                }}
+                id={id}
+                className="user-drag    h-[20px]"
+                src={type === "folder" ? folder : path}
+                alt={name}
+              />
+
+              <span
+                onContextMenu={(e) => {
+                  e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+                }}
+                onClick={() => {
+                  rightClickItem(name, type, clip, tooltip, id);
+                  navigator.clipboard.writeText(clip);
+                }}
+                className="text-base  capitalize"
+              >
+                {name}
+              </span>
+            </div>
+          </TooltipComponent>
+        ) : (
+          <div
+            onContextMenu={(e) => {
+              e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+            }}
+            onClick={() => {
+              rightClickItem(name, type, clip, tooltip, id);
+            }}
+            className="flex gap-2 items-center px-2 py-1 hover:bg-slate-700"
+          >
+            <img
+              onContextMenu={(e) => {
+                e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+              }}
+              onClick={() => {
+                rightClickItem(name, type, clip, tooltip, id);
+              }}
+              id={id}
+              className="user-drag h-[20px]"
+              src={type === "folder" ? folder : path}
+              alt={name}
+            />
+
+            <span
+              onContextMenu={(e) => {
+                e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+              }}
+              onClick={() => {
+                rightClickItem(name, type, clip, tooltip, id);
+                navigator.clipboard.writeText(clip);
+              }}
+              className="text-base capitalize"
+            >
+              {name}
+            </span>
+          </div>
+        )}
+      </>
     );
   };
-
   const menuItems = [
     {
       text: "Add folder",
@@ -68,24 +117,21 @@ const Listbox = () => {
       iconCss: "e-icons e-trash",
     },
   ];
-
   function droppingItem() {
-   useStore.getState().setSidebarList(listboxRef.getDataList(), selectedItem.idIcon);
+    useStore.getState().setSidebarList(listboxRef.getDataList(), selectedItem.idIcon);
   }
   function leftClickItem(name, type, clip, tooltip, id) {
     if (type === "folder") {
       useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: true, name, folder: name, type } });
-    //  console.log(useStore.getState().selectedItem);
     }
     if (type === "clip") {
-      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem,isSub:false, idList: id, name, clip, clipName: name, tooltip, type } });
-    
+      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, isSub: false, idList: id, name, clip, clipName: name, tooltip, type } });
     }
   }
   // ********* contextMenu ************
   function rightClickItem(name, type, clip, tooltip, id) {
     if (type === "folder") {
-      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id,isSub: true, name, folder: name, type } });
+      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: true, name, folder: name, type } });
     }
     if (type === "clip") {
       useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: false, name, clipName: name, clip, tooltip, type } });
@@ -119,7 +165,7 @@ const Listbox = () => {
   }
   //  *********************************
   return (
-    <>
+    <div className="shrink-0">
       {selectedItemClicked && (
         <div>
           <div className="bg-[#2f3136] h-max  overflow-x-hidden" id="listbox-control">
@@ -139,7 +185,7 @@ const Listbox = () => {
           <PopupDialog />
         </div>
       )}
-    </>
+    </div>
   );
 };
 

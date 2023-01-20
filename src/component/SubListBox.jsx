@@ -2,8 +2,8 @@
 import { ListBoxComponent } from "@syncfusion/ej2-react-dropdowns";
 import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
 import { useStore } from "../contexts/Store";
-import folder from "../data/icons/folder.png";
 import PopupDialog from "./PopupDialog";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 const SubListBox = () => {
   const selectedItem = useStore((state) => state.selectedItem);
@@ -11,48 +11,94 @@ const SubListBox = () => {
     useStore((state) => state.sidebarIcons)
       ?.find((item) => item.id === selectedItem.idIcon)
       ?.listboxItems?.find((folder) => folder.id === selectedItem.idList)?.subList || [];
-  const selectedItemClicked = selectedItem.isSub===true;
+  const selectedItemClicked = selectedItem.isSub === true;
   let listboxRef = {};
-
   const listBoxTemplate = ({ path, name, type, clip, tooltip, id }) => {
     return (
-      <div
-        onContextMenu={(e) => {
-          e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
-        }}
-        onClick={() => {
-          rightClickItem(name, type, clip, tooltip, id);
-        }}
-        className="flex gap-2 items-center px-2"
-      >
-        <img
-          onContextMenu={(e) => {
-            e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
-          }}
-          onClick={() => {
-            rightClickItem(name, type, clip, tooltip, id);
-          }}
-          id={id}
-          className="user-drag h-[20px]"
-          src={path}
-          alt={name}
-        />
-        <span
-          onContextMenu={(e) => {
-            e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
-          }}
-          onClick={() => {
-            rightClickItem(name, type, clip, tooltip, id);
-            navigator.clipboard.writeText(clip);
-          }}
-          className=""
-        >
-          {name}
-        </span>
-      </div>
+      <>
+        {tooltip.length > 0 ? (
+          <TooltipComponent
+            content={tooltip}
+            animation={{
+              open: { effect: "ZoomIn", duration: 200 },
+              close: { effect: "ZoomOut", duration: 0 },
+            }}
+            position="RightCenter"
+          >
+            <div
+              onContextMenu={(e) => {
+                e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+              }}
+              onClick={() => {
+                rightClickItem(name, type, clip, tooltip, id);
+              }}
+              className="flex gap-2 items-center px-2 py-1 hover:bg-slate-700"
+            >
+              <img
+                onContextMenu={(e) => {
+                  e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+                }}
+                onClick={() => {
+                  rightClickItem(name, type, clip, tooltip, id);
+                }}
+                id={id}
+                className="user-drag h-[20px]"
+                src={path}
+                alt={name}
+              />
+              <span
+                onContextMenu={(e) => {
+                  e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+                }}
+                onClick={() => {
+                  rightClickItem(name, type, clip, tooltip, id);
+                  navigator.clipboard.writeText(clip);
+                }}
+                className="text-base capitalize"
+              >
+                {name}
+              </span>
+            </div>
+          </TooltipComponent>
+        ) : (
+          <div
+            onContextMenu={(e) => {
+              e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+            }}
+            onClick={() => {
+              rightClickItem(name, type, clip, tooltip, id);
+            }}
+            className="flex gap-2 items-center px-2 hover:bg-slate-700"
+          >
+            <img
+              onContextMenu={(e) => {
+                e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+              }}
+              onClick={() => {
+                rightClickItem(name, type, clip, tooltip, id);
+              }}
+              id={id}
+              className="user-drag h-[20px]"
+              src={path}
+              alt={name}
+            />
+            <span
+              onContextMenu={(e) => {
+                e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);
+              }}
+              onClick={() => {
+                rightClickItem(name, type, clip, tooltip, id);
+                navigator.clipboard.writeText(clip);
+              }}
+              className="text-base capitalize"
+            >
+              {name}
+            </span>
+          </div>
+        )}
+      </>
     );
   };
-
   const menuItems = [
     {
       text: "Add clipBoard",
@@ -67,34 +113,32 @@ const SubListBox = () => {
       iconCss: "e-icons e-trash",
     },
   ];
-
   function droppingItem() {
     useStore.getState().setSidebarSubList(listboxRef.getDataList(), selectedItem.idIcon, selectedItem.idList);
   }
   function leftClickItem(name, type, clip, tooltip, id) {
-      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idSubList: id,isSub:true, name, clip, clipName: name, tooltip, type } });
+    useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idSubList: id, isSub: true, name, clip, clipName: name, tooltip, type } });
   }
   // ********* contextMenu ************
   function rightClickItem(name, type, clip, tooltip, id) {
-useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idSubList: id, isSub: true, name, clip, clipName: name, tooltip, type } });
+    useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idSubList: id, isSub: true, name, clip, clipName: name, tooltip, type } });
   }
   function contextMenuClick(args) {
-    console.log(useStore.getState().selectedItem);
     switch (args.item.text) {
       case "Add clipBoard":
         useStore.setState({ dropdownOpen: true, type: "Add Sub ClipBoard" });
         break;
       case "Edit":
-          useStore.setState({ type: "Edit Sub ClipBoard", dropdownOpen: true });
+        useStore.setState({ type: "Edit Sub ClipBoard", dropdownOpen: true });
         break;
       case "Remove":
-          useStore.setState({ type: "Remove Sub ClipBoard", dropdownOpen: true });
+        useStore.setState({ type: "Remove Sub ClipBoard", dropdownOpen: true });
         break;
     }
   }
   //  *********************************
   return (
-    <>
+    <div className="shrink-0">
       {selectedItemClicked && (
         <div>
           <div className="bg-[#2f3136] h-max  overflow-x-hidden" id="listbox2-control">
@@ -114,7 +158,7 @@ useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idSubLi
           <PopupDialog />
         </div>
       )}
-    </>
+    </div>
   );
 };
 

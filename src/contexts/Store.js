@@ -1,6 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import { create } from "zustand";
-const { ipcRenderer } = require("electron");
+// const { ipcRenderer } = require("electron");
 import add from "../data/icons/addcircle.png";
 import Store from "electron-store";
 import { v4 as uuidv4 } from "uuid";
