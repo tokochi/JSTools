@@ -17,7 +17,7 @@ process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
 process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
   ? join(process.env.DIST_ELECTRON, '../public')
   : process.env.DIST
-const urlToolbar = `http://${process.env.VITE_DEV_SERVER_URL}/toolbar.html`;
+const urlToolbar = `${process.env.VITE_DEV_SERVER_URL}/toolbar.html`;
 Store.initRenderer();
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -44,7 +44,13 @@ const indexHtml = join(process.env.DIST, 'index.html')
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: "Main window",
+    title: "JSTools",
+    titleBarStyle: "hidden",
+    titleBarOverlay: {
+      color: "#202225",
+      symbolColor: "#74b1be",
+      height: 30,
+    },
     icon: join(process.env.PUBLIC, "favicon.ico"),
     webPreferences: {
       preload,
@@ -59,8 +65,7 @@ async function createWindow() {
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
-    // Open devTool if the app is not packaged
-    win.webContents.openDevTools()
+        // win.webContents.openDevTools();
   } else {
     win.loadFile(indexHtml)
   }
@@ -104,11 +109,11 @@ app.on('activate', () => {
 
 function createToolbarWindow() {
   ToolbarWindow = new BrowserWindow({
-    width: 70,
-    height: 800,
+    // width: 70,
+    // height: 800,
     title: "JS Toolbar",
     alwaysOnTop: true,
-    frame: false,
+    titleBarStyle: "hidden",
     backgroundColor: "#3c3c3c",
     webPreferences: {
       nodeIntegration: true,
@@ -121,6 +126,7 @@ function createToolbarWindow() {
     ToolbarWindow.loadFile(join(__dirname, "../../toolbar.html"));
   } else {
     ToolbarWindow.loadURL(urlToolbar);
+    ToolbarWindow.webContents.openDevTools();
   }
 }
 

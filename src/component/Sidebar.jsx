@@ -17,7 +17,7 @@ const Sidebar = () => {
           onClick={() => {
             rightClickItem(name, id, path);
           }}
-          className="user-drag hover:scale-110  h-[45px] my-1 transition-all duration-300"
+          className=".user-nodrag hover:scale-110  h-[45px] my-1 transition-all duration-300"
           src={path}
           alt={name}
         />
@@ -44,7 +44,6 @@ const Sidebar = () => {
   }
   function leftClickItem(name, id, path) {
     useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idIcon: id, isSub: false, icon: name, path, type: "icon" } });
-
   }
   // ********* contextMenu ************
   function rightClickItem(name, id, path) {
@@ -65,7 +64,7 @@ const Sidebar = () => {
   }
   //  *********************************
   return (
-    <div className=" h-screen bg-[#202225] w-[60px] overflow-x-hidden shrink-0">
+    <div className=" h-[calc(100vh_-_30px)] bg-[#202225] w-[60px] overflow-x-hidden shrink-0">
       <div className="" id="listbox-sidebar">
         <ListBoxComponent
           ref={(g) => (listboxRef = g)}
@@ -78,9 +77,14 @@ const Sidebar = () => {
         />
       </div>
       <div id="contextmenu-sidebar">
-        <ContextMenuComponent target="#listbox-sidebar" items={menuItems} select={contextMenuClick} animationSettings={{ duration: 500, effect: "FadeIn" }} />
+        <ContextMenuComponent
+          target="#listbox-sidebar"
+          items={menuItems}
+          select={contextMenuClick}
+          animationSettings={{ duration: 500, effect: "FadeIn" }}
+        />
       </div>
-       <PopupDialog />
+      <PopupDialog />
     </div>
   );
 };

@@ -5,16 +5,14 @@ import { useStore } from "../contexts/Store";
 import Store from "electron-store";
 import { v4 as uuidv4 } from "uuid";
 
-
 export default function PopupDialog() {
   const store = new Store();
   const dropdownOpen = useStore((state) => state.dropdownOpen);
   const editType = useStore((state) => state.type);
-  const { idIcon, idList, idSubList, icon, folder, path, clip, clipName, tooltip } = useStore((state) => state.selectedItem);
+  const { idIcon, idList, idSubList, idTool, icon, folder, path, clip, clipName, tooltip } = useStore((state) => state.selectedItem);
   const listboxItems = useStore((state) => state.sidebarIcons)?.find((item) => item.id === idIcon)?.listboxItems;
-  const listSubBoxItems = useStore((state) => state.sidebarIcons)
-    ?.find((item) => item.id === idIcon)
-    ?.listboxItems?.find((folder) => folder.id === idList)?.subList;
+  const listSubBoxItems = useStore((state) => state.sidebarIcons);
+  const listTool = useStore((state) => state.toolbarItems);
   const [newIcon, setNewIcon] = useState("");
   const [newFolder, setNewFolder] = useState("");
   const [newClipName, setNewClipName] = useState("");
@@ -28,7 +26,7 @@ export default function PopupDialog() {
     setNewClipName(clipName);
     setNewClip(clip);
     setNewTooltip(tooltip);
-  }, [idIcon, idList, idSubList]);
+  }, [idIcon, idList, idSubList, idTool]);
   // *********** CRUD functions ************
   function addIcon() {
     useStore.setState({ dropdownOpen: false });
@@ -37,7 +35,9 @@ export default function PopupDialog() {
   }
   function editIcon() {
     useStore.setState({ dropdownOpen: false });
-    const newArray = store?.get("sidebarIcons").map((item) => (item.id === idIcon && newPath !== null ? { ...item, name: newIcon, path: newPath } : item));
+    const newArray = store
+      ?.get("sidebarIcons")
+      .map((item) => (item.id === idIcon && newPath !== null ? { ...item, name: newIcon, path: newPath } : item));
     store?.set("sidebarIcons", newArray);
     useStore.getState().updateSidebarIcons();
   }
@@ -75,6 +75,7 @@ export default function PopupDialog() {
         "sidebarIcons",
         store?.get("sidebarIcons").map((icons) => (icons.id === idIcon ? { ...icons, listboxItems: listboxItem } : icons))
       );
+      useStore.getState().updateSidebarIcons();
     }
     if (editType === "Add Sub ClipBoard") {
       const listSubBoxItem = store
@@ -84,26 +85,51 @@ export default function PopupDialog() {
       listSubBoxItem.push({ id: uuidv4(), type: "clip", name: newClipName, clip: newClip, tooltip: newTooltip, path: newPath });
       store?.set(
         "sidebarIcons",
-        store
-          ?.get("sidebarIcons")
-          .map((icons) => (icons.id === idIcon ? { ...icons, listboxItems: icons.listboxItems.map((folder) => (folder.id === idList ? { ...folder, subList: listSubBoxItem } : folder)) } : icons))
+        store?.get("sidebarIcons").map((icons) =>
+          icons.id === idIcon
+            ? {
+                ...icons,
+                listboxItems: icons.listboxItems.map((folder) => (folder.id === idList ? { ...folder, subList: listSubBoxItem } : folder)),
+              }
+            : icons
+        )
       );
+      useStore.getState().updateSidebarIcons();
     }
-    useStore.getState().updateSidebarIcons();
+    if (editType === "Add Tool") {
+      store?.set("toolbarItems", [...store?.get("toolbarItems"), { id: uuidv4(), type: "clip", name: newClipName, clip: newClip, path: newPath }]);
+      useStore.getState().updateToolbarItems();
+    }
   }
   function editClip() {
     useStore.setState({ dropdownOpen: false });
     if (editType === "Edit Sub ClipBoard") {
-      const listSubboxItem = listSubBoxItems.map((clip) => (clip.id === idSubList ? { ...clip, name: newClipName, clip: newClip, tooltip: newTooltip } : clip));
+      const listSubboxItem = listSubBoxItems.map((clip) =>
+        clip.id === idSubList ? { ...clip, name: newClipName, clip: newClip, tooltip: newTooltip } : clip
+      );
       const newArray = store
         ?.get("sidebarIcons")
-        .map((icons) => (icons.id === idIcon ? { ...icons, listboxItems: icons.listboxItems.map((folder) => (folder.id === idList ? { ...folder, subList: listSubboxItem } : folder)) } : icons));
+        .map((icons) =>
+          icons.id === idIcon
+            ? { ...icons, listboxItems: icons.listboxItems.map((folder) => (folder.id === idList ? { ...folder, subList: listSubboxItem } : folder)) }
+            : icons
+        );
       store?.set("sidebarIcons", newArray);
     }
     if (editType === "Edit ClipBoard") {
-      const listboxItem = listboxItems.map((item) => (item.id === idList && item.type === "clip" ? { ...item, name: newClipName, clip: newClip, tooltip: newTooltip } : item));
+      const listboxItem = listboxItems.map((item) =>
+        item.id === idList && item.type === "clip" ? { ...item, name: newClipName, clip: newClip, tooltip: newTooltip } : item
+      );
       const newArray = store?.get("sidebarIcons").map((item) => (item.id === idIcon ? { ...item, listboxItems: [...listboxItem] } : item));
       store?.set("sidebarIcons", newArray);
+    }
+    if (editType === "Edit Tool") {
+      const newArray = store
+        ?.get("toolbarItems")
+        .map((tool) => (tool.id === idTool && newPath !== null ? { ...tool, name: newClipName, clip: newClip, path: newPath } : tool));
+      store?.set("toolbarItems", newArray);
+      useStore.getState().updateToolbarItems();
+
     }
     useStore.getState().updateSidebarIcons();
   }
@@ -113,21 +139,34 @@ export default function PopupDialog() {
       const listSubboxItem = listSubBoxItems.filter((clip) => clip.id !== idSubList);
       const newArray = store
         ?.get("sidebarIcons")
-        .map((icons) => (icons.id === idIcon ? { ...icons, listboxItems: icons.listboxItems.map((folder) => (folder.id === idList ? { ...folder, subList: listSubboxItem } : folder)) } : icons));
+        .map((icons) =>
+          icons.id === idIcon
+            ? { ...icons, listboxItems: icons.listboxItems.map((folder) => (folder.id === idList ? { ...folder, subList: listSubboxItem } : folder)) }
+            : icons
+        );
       store?.set("sidebarIcons", newArray);
-    } else {
+      useStore.getState().updateSidebarIcons();
+    }
+    if (editType === "Remove ClipBoard") {
       const listboxItem = listboxItems.filter((item) => item.id !== idList);
       const newArray = store?.get("sidebarIcons").map((item) => (item.id === idIcon ? { ...item, listboxItems: [...listboxItem] } : item));
       store?.set("sidebarIcons", newArray);
+      useStore.getState().updateSidebarIcons();
     }
-    useStore.getState().updateSidebarIcons();
+    if (editType === "Remove Tool") {
+      store?.set(
+        "toolbarItems",
+        store?.get("toolbarItems").filter((tool) => tool.id !== idTool)
+      );
+      useStore.getState().updateToolbarItems();
+    }
   }
   return (
     <div className={`${!dropdownOpen && "hidden"}`}>
       <div className=" h-screen w-screen  fixed top-0 left-0">
         <div id="element" className="fixed top-[100px] left-[100px] right-0 z-50  w-[300px] p-4 overflow-x-hidden overflow-y-auto">
           {/* ******************** Header ****************************** */}
-          <div  className="relative w-full h-full max-w-2xl md:h-auto">
+          <div className="relative w-full h-full max-w-2xl md:h-auto">
             <div className="relative bg-[#111827] rounded-lg shadow">
               <div className="flex items-start justify-between p-4 border-b rounded-t dark:border-gray-600">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{editType}</h3>
@@ -229,7 +268,7 @@ export default function PopupDialog() {
                   </div>
                 </div>
               )}
-              {(editType === "Add ClipBoard" || editType === "Add Sub ClipBoard") && (
+              {(editType === "Add ClipBoard" || editType === "Add Sub ClipBoard" || editType === "Add Tool") && (
                 <div className="flex flex-col  p-4 gap-2">
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ClipBoard Name</label>
@@ -258,20 +297,39 @@ export default function PopupDialog() {
                       placeholder="Write your clipboard here..."
                     ></textarea>
                   </div>
-                  <div>
-                    <label htmlFor="message" className="block mb-2 text-sm font-medium text-white">
-                      Tooltip
-                    </label>
-                    <textarea
-                      id="message"
-                      rows="3"
-                      onChange={(e) => {
-                        setNewTooltip(e.target.value);
-                      }}
-                      className="block p-1.5 w-full text-sm  rounded-lg border  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Write your Tooltip here..."
-                    ></textarea>
-                  </div>
+                  {(editType === "Add ClipBoard" || editType === "Add Sub ClipBoard") && (
+                    <div>
+                      <label htmlFor="message" className="block mb-2 text-sm font-medium text-white">
+                        Tooltip
+                      </label>
+                      <textarea
+                        id="message"
+                        rows="3"
+                        onChange={(e) => {
+                          setNewTooltip(e.target.value);
+                        }}
+                        className="block p-1.5 w-full text-sm  rounded-lg border  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Write your Tooltip here..."
+                      ></textarea>
+                    </div>
+                  )}
+                  {editType === "Add Tool" && (
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">
+                        Upload Image
+                      </label>
+                      <input
+                        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        id="file_input"
+                        type="file"
+                        accept="image/*"
+                        required
+                        onChange={(e) => {
+                          setNewPath(e.target.files[0].path);
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
               {editType === "Edit Folder" && (
@@ -292,7 +350,7 @@ export default function PopupDialog() {
                   </div>
                 </div>
               )}
-              {(editType === "Edit ClipBoard" || editType === "Edit Sub ClipBoard") && (
+              {(editType === "Edit ClipBoard" || editType === "Edit Sub ClipBoard" || editType === "Edit Tool") && (
                 <div className="flex flex-col  p-4 gap-2">
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">ClipBoard Name</label>
@@ -323,27 +381,53 @@ export default function PopupDialog() {
                       placeholder="Write your clipboard here..."
                     ></textarea>
                   </div>
-                  <div>
-                    <label htmlFor="message" className="block mb-2 text-sm font-medium text-white">
-                      Tooltip
-                    </label>
-                    <textarea
-                      id="message"
-                      rows="3"
-                      value={newTooltip}
-                      onChange={(e) => {
-                        setNewTooltip(e.target.value);
-                      }}
-                      className="block p-1.5 w-full text-sm  rounded-lg border  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
-                      placeholder="Write your Tooltip here..."
-                    ></textarea>
-                  </div>
+                  {(editType === "Edit ClipBoard" || editType === "Edit Sub ClipBoard") && (
+                    <div>
+                      <label htmlFor="message" className="block mb-2 text-sm font-medium text-white">
+                        Tooltip
+                      </label>
+                      <textarea
+                        id="message"
+                        rows="3"
+                        value={newTooltip}
+                        onChange={(e) => {
+                          setNewTooltip(e.target.value);
+                        }}
+                        className="block p-1.5 w-full text-sm  rounded-lg border  bg-gray-700 border-gray-600 placeholder-gray-400 text-white focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Write your Tooltip here..."
+                      ></textarea>
+                    </div>
+                  )}
+                  {editType === "Edit Tool" && (
+                    <div>
+                      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white" htmlFor="file_input">
+                        Upload Image
+                      </label>
+                      <input
+                        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                        id="file_input"
+                        type="file"
+                        accept="image/*"
+                        required
+                        onChange={(e) => {
+                          setNewPath(e.target.files[0].path);
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
               {/* ******************** Footer ****************************** */}
               {editType.startsWith("Remove") ? (
                 <div className="p-6 text-center">
-                  <svg aria-hidden="true" className="mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <svg
+                    aria-hidden="true"
+                    className="mx-auto mb-4 text-gray-400 w-14 h-14 dark:text-gray-200"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                   <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete this item?</h3>
@@ -353,7 +437,13 @@ export default function PopupDialog() {
                         case "Remove Icon":
                           removeIcon();
                           break;
-                        case "Remove Folder" || "Remove ClipBoard":
+                        case "Remove Folder":
+                          removeFolder();
+                          break;
+                        case "Remove ClipBoard":
+                          removeFolder();
+                          break;
+                        case "Remove Tool":
                           removeFolder();
                           break;
                       }
@@ -378,13 +468,25 @@ export default function PopupDialog() {
                         case "Add Folder":
                           addFolder();
                           break;
-                        case "Add ClipBoard" || "Add Sub ClipBoard":
+                        case "Add ClipBoard":
+                          addClip();
+                          break;
+                        case "Add Sub ClipBoard":
+                          addClip();
+                          break;
+                        case "Add Tool":
                           addClip();
                           break;
                         case "Edit Folder":
                           editFolder();
                           break;
-                        case "Edit ClipBoard" || "Edit Sub ClipBoard":
+                        case "Edit ClipBoard":
+                          editClip();
+                          break;
+                        case "Edit Sub ClipBoard":
+                          editClip();
+                          break;
+                        case "Edit Tool":
                           editClip();
                           break;
                       }

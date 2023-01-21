@@ -7,11 +7,17 @@ import { v4 as uuidv4 } from "uuid";
 
 const store = new Store();
 if (store?.get("sidebarIcons")==null){store?.set("sidebarIcons", [{ id: uuidv4(), name: "new", path: add, listboxItems: [] }]);} 
-//store?.delete("sidebarIcons");
+if (store?.get("toolbarItems") == null) {
+  store?.set("toolbarItems", [{ id: uuidv4(),type: "clip", name: "new", path: add}]);
+} 
+//store?.delete("toolbarItems");
 export const useStore = create((set) => ({
   sidebarIcons: store?.get("sidebarIcons"),
+  toolbarItems: store?.get("toolbarItems"),
   updateSidebarIcons: () => set(() => ({ sidebarIcons: store?.get("sidebarIcons") })),
+  updateToolbarItems: () => set(() => ({ toolbarItems: store?.get("toolbarItems") })),
   setSidebarIcons: (list) => store?.set("sidebarIcons", list),
+  setToolbarItems: (list) => store?.set("toolbarItems", list),
   setSidebarList: (list, idIcon) => {
     store?.set(
       "sidebarIcons",
@@ -24,7 +30,20 @@ export const useStore = create((set) => ({
       store?.get("sidebarIcons").map((icon) => (icon.id === idIcon ? { ...icon, listboxItems: list } : icon))
     );
   },
-  selectedItem: { idIcon: "", idList: "", idSubList: "", name: "", icon: "", type: "", folder: "", path: "", clipName: "", clip: "", tooltip: "" },
+  selectedItem: {
+    idIcon: "",
+    idList: "",
+    idSubList: "",
+    idTool:"",
+    name: "",
+    icon: "",
+    type: "",
+    folder: "",
+    path: "",
+    clipName: "",
+    clip: "",
+    tooltip: "",
+  },
   dropdownOpen: false,
   type: "",
 }));

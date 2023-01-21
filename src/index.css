@@ -20,10 +20,15 @@ body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-.user-drag {
+.user-nodrag {
   -webkit-user-drag: none;
+  -webkit-app-region: no-drag;
 }
+.user-drag {
+ -webkit-app-region: drag;
+ 
+}
+
 .btn-xs {
   @apply font-medium text-sm inline-flex items-center justify-center border border-transparent rounded leading-5 shadow-sm transition duration-150 ease-in-out;
 }

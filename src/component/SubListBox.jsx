@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unknown-property */
 import { ListBoxComponent } from "@syncfusion/ej2-react-dropdowns";
 import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { useStore } from "../contexts/Store";
 import PopupDialog from "./PopupDialog";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 const SubListBox = () => {
   const selectedItem = useStore((state) => state.selectedItem);
@@ -40,9 +40,10 @@ const SubListBox = () => {
                 }}
                 onClick={() => {
                   rightClickItem(name, type, clip, tooltip, id);
+                  navigator.clipboard.writeText(clip);
                 }}
                 id={id}
-                className="user-drag h-[20px]"
+                className=".user-nodrag h-[20px]"
                 src={path}
                 alt={name}
               />
@@ -78,7 +79,7 @@ const SubListBox = () => {
                 rightClickItem(name, type, clip, tooltip, id);
               }}
               id={id}
-              className="user-drag h-[20px]"
+              className=".user-nodrag h-[20px]"
               src={path}
               alt={name}
             />
@@ -99,29 +100,20 @@ const SubListBox = () => {
       </>
     );
   };
-  const menuItems = [
-    {
-      text: "Add clipBoard",
-      iconCss: "e-icons e-code-view",
-    },
-    {
-      text: "Edit",
-      iconCss: "e-icons e-edit",
-    },
-    {
-      text: "Remove",
-      iconCss: "e-icons e-trash",
-    },
-  ];
+  // ********* Drag & Drop  ************
   function droppingItem() {
     useStore.getState().setSidebarSubList(listboxRef.getDataList(), selectedItem.idIcon, selectedItem.idList);
   }
   function leftClickItem(name, type, clip, tooltip, id) {
-    useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idSubList: id, isSub: true, name, clip, clipName: name, tooltip, type } });
+    useStore.setState({
+      selectedItem: { ...useStore.getState().selectedItem, idSubList: id, isSub: true, name, clip, clipName: name, tooltip, type },
+    });
   }
   // ********* contextMenu ************
   function rightClickItem(name, type, clip, tooltip, id) {
-    useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idSubList: id, isSub: true, name, clip, clipName: name, tooltip, type } });
+    useStore.setState({
+      selectedItem: { ...useStore.getState().selectedItem, idSubList: id, isSub: true, name, clip, clipName: name, tooltip, type },
+    });
   }
   function contextMenuClick(args) {
     switch (args.item.text) {
@@ -136,7 +128,21 @@ const SubListBox = () => {
         break;
     }
   }
-  //  *********************************
+  const menuItems = [
+    {
+      text: "Add clipBoard",
+      iconCss: "e-icons e-code-view",
+    },
+    {
+      text: "Edit",
+      iconCss: "e-icons e-edit",
+    },
+    {
+      text: "Remove",
+      iconCss: "e-icons e-trash",
+    },
+  ];
+  // *********************************
   return (
     <div className="shrink-0">
       {selectedItemClicked && (
@@ -153,7 +159,12 @@ const SubListBox = () => {
             />
           </div>
           <div id="contextmenu-listbox">
-            <ContextMenuComponent target="#listbox2-control" items={menuItems} select={contextMenuClick} animationSettings={{ duration: 500, effect: "FadeIn" }} />
+            <ContextMenuComponent
+              target="#listbox2-control"
+              items={menuItems}
+              select={contextMenuClick}
+              animationSettings={{ duration: 500, effect: "FadeIn" }}
+            />
           </div>
           <PopupDialog />
         </div>

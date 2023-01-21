@@ -1,10 +1,10 @@
 /* eslint-disable react/no-unknown-property */
 import { ListBoxComponent } from "@syncfusion/ej2-react-dropdowns";
 import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
+import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 import { useStore } from "../contexts/Store";
 import folder from "../data/icons/folder.png";
 import PopupDialog from "./PopupDialog";
-import { TooltipComponent } from "@syncfusion/ej2-react-popups";
 
 const Listbox = () => {
   const selectedItem = useStore((state) => state.selectedItem);
@@ -40,7 +40,7 @@ const Listbox = () => {
                   rightClickItem(name, type, clip, tooltip, id);
                 }}
                 id={id}
-                className="user-drag    h-[20px]"
+                className=".user-nodrag    h-[20px]"
                 src={type === "folder" ? folder : path}
                 alt={name}
               />
@@ -77,7 +77,7 @@ const Listbox = () => {
                 rightClickItem(name, type, clip, tooltip, id);
               }}
               id={id}
-              className="user-drag h-[20px]"
+              className=".user-nodrag h-[20px]"
               src={type === "folder" ? folder : path}
               alt={name}
             />
@@ -99,24 +99,7 @@ const Listbox = () => {
       </>
     );
   };
-  const menuItems = [
-    {
-      text: "Add folder",
-      iconCss: "e-icons e-folder-fill",
-    },
-    {
-      text: "Add clipBoard",
-      iconCss: "e-icons e-code-view",
-    },
-    {
-      text: "Edit",
-      iconCss: "e-icons e-edit",
-    },
-    {
-      text: "Remove",
-      iconCss: "e-icons e-trash",
-    },
-  ];
+  // ********* Drag & Drop  ************
   function droppingItem() {
     useStore.getState().setSidebarList(listboxRef.getDataList(), selectedItem.idIcon);
   }
@@ -125,7 +108,10 @@ const Listbox = () => {
       useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: true, name, folder: name, type } });
     }
     if (type === "clip") {
-      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, isSub: false, idList: id, name, clip, clipName: name, tooltip, type } });
+      navigator.clipboard.writeText(clip);
+      useStore.setState({
+        selectedItem: { ...useStore.getState().selectedItem, isSub: false, idList: id, name, clip, clipName: name, tooltip, type },
+      });
     }
   }
   // ********* contextMenu ************
@@ -134,7 +120,9 @@ const Listbox = () => {
       useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: true, name, folder: name, type } });
     }
     if (type === "clip") {
-      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: false, name, clipName: name, clip, tooltip, type } });
+      useStore.setState({
+        selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: false, name, clipName: name, clip, tooltip, type },
+      });
     }
   }
   function contextMenuClick(args) {
@@ -163,6 +151,24 @@ const Listbox = () => {
         break;
     }
   }
+  const menuItems = [
+    {
+      text: "Add folder",
+      iconCss: "e-icons e-folder-fill",
+    },
+    {
+      text: "Add clipBoard",
+      iconCss: "e-icons e-code-view",
+    },
+    {
+      text: "Edit",
+      iconCss: "e-icons e-edit",
+    },
+    {
+      text: "Remove",
+      iconCss: "e-icons e-trash",
+    },
+  ];
   //  *********************************
   return (
     <div className="shrink-0">
@@ -180,7 +186,12 @@ const Listbox = () => {
             />
           </div>
           <div id="contextmenu-listbox">
-            <ContextMenuComponent target="#listbox-control" items={menuItems} select={contextMenuClick} animationSettings={{ duration: 500, effect: "FadeIn" }} />
+            <ContextMenuComponent
+              target="#listbox-control"
+              items={menuItems}
+              select={contextMenuClick}
+              animationSettings={{ duration: 500, effect: "FadeIn" }}
+            />
           </div>
           <PopupDialog />
         </div>
