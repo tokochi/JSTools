@@ -20,15 +20,30 @@ body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 .user-nodrag {
   -webkit-user-drag: none;
   -webkit-app-region: no-drag;
 }
 .user-drag {
  -webkit-app-region: drag;
- 
+}
+.e-listbox-wrapper,
+.e-list-item {
+  border: none !important;
+  background-color: transparent !important;
+  border-radius: 0;
+}
+.e-listbox-wrapper .e-list-parent, .e-listbox-container .e-list-parent {
+    min-height: 0 !important;
 }
 
-.btn-xs {
-  @apply font-medium text-sm inline-flex items-center justify-center border border-transparent rounded leading-5 shadow-sm transition duration-150 ease-in-out;
+.e-listbox-wrapper .e-list-item.e-selected {
+  background: rgb(17, 24, 39) !important;
+}
+.e-contextmenu-wrapper ul {
+  background: rgb(47, 49, 54) !important;
+  color: rgb(255, 193, 7) !important;
+  border-radius: 5% !important;
+  margin-left: 15px !important;
 }

@@ -9,7 +9,7 @@ const Sidebar = () => {
   let listboxRef = {};
   const listBoxTemplate = ({ path, name, id }) => {
     return (
-      <div className="flex flex-col items-center px-2 ">
+      <div className="flex flex-col items-center px-2">
         <img
           onContextMenu={(e) => {
             e.preventDefault(), leftClickItem(name, id, path);
@@ -17,7 +17,7 @@ const Sidebar = () => {
           onClick={() => {
             rightClickItem(name, id, path);
           }}
-          className=".user-nodrag hover:scale-110  h-[45px] my-1 transition-all duration-300"
+          className="user-nodrag hover:scale-110 h-[40px] my-1 transition-all duration-300"
           src={path}
           alt={name}
         />

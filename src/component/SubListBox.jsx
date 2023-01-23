@@ -43,7 +43,7 @@ const SubListBox = () => {
                   navigator.clipboard.writeText(clip);
                 }}
                 id={id}
-                className=".user-nodrag h-[20px]"
+                className="user-nodrag h-[20px]"
                 src={path}
                 alt={name}
               />

@@ -11,6 +11,8 @@ const Listbox = () => {
   const data = useStore((state) => state.sidebarIcons)?.find((item) => item.id === selectedItem.idIcon)?.listboxItems || [];
   const selectedItemClicked = useStore((state) => state.selectedItem.icon !== "");
   let listboxRef = {};
+
+
   const listBoxTemplate = ({ path, name, type, clip, tooltip, id }) => {
     return (
       <>
@@ -30,7 +32,7 @@ const Listbox = () => {
               onClick={() => {
                 rightClickItem(name, type, clip, tooltip, id);
               }}
-              className="flex gap-2 items-center px-2 py-1 hover:bg-slate-700"
+              className='flex active:bg-green-600  hover:bg-slate-700 gap-2 items-center px-2 py-1 transition-colors ease'
             >
               <img
                 onContextMenu={(e) => {
@@ -40,11 +42,10 @@ const Listbox = () => {
                   rightClickItem(name, type, clip, tooltip, id);
                 }}
                 id={id}
-                className=".user-nodrag    h-[20px]"
+                className="user-nodrag  h-[20px]"
                 src={type === "folder" ? folder : path}
                 alt={name}
               />
-
               <span
                 onContextMenu={(e) => {
                   e.preventDefault(), leftClickItem(name, type, clip, tooltip, id);

@@ -10,10 +10,10 @@ function App() {
   return (
     <>
       <Titlebar />
-    <div className="flex relative">
-      <Sidebar />
-      <Listbox />
-      <SubListBox />
+      <div className="flex relative">
+        <Sidebar />
+        <Listbox />
+        <SubListBox />
       </div>
     </>
   );
@@ -21,3 +21,4 @@ function App() {
         
 
 export default App
+

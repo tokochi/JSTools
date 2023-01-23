@@ -7,12 +7,12 @@ import { v4 as uuidv4 } from "uuid";
 
 export default function PopupDialog() {
   const store = new Store();
+  console.log(store.path);
   const dropdownOpen = useStore((state) => state.dropdownOpen);
   const editType = useStore((state) => state.type);
   const { idIcon, idList, idSubList, idTool, icon, folder, path, clip, clipName, tooltip } = useStore((state) => state.selectedItem);
   const listboxItems = useStore((state) => state.sidebarIcons)?.find((item) => item.id === idIcon)?.listboxItems;
   const listSubBoxItems = useStore((state) => state.sidebarIcons);
-  const listTool = useStore((state) => state.toolbarItems);
   const [newIcon, setNewIcon] = useState("");
   const [newFolder, setNewFolder] = useState("");
   const [newClipName, setNewClipName] = useState("");

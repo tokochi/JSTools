@@ -1,6 +1,5 @@
 import { ListBoxComponent } from "@syncfusion/ej2-react-dropdowns";
 import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
-import React, { useState } from "react";
 import { useStore } from "../contexts/Store";
 import PopupDialog from "./PopupDialog";
 

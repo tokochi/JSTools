@@ -65,7 +65,7 @@ async function createWindow() {
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
-        // win.webContents.openDevTools();
+         win.webContents.openDevTools();
   } else {
     win.loadFile(indexHtml)
   }

@@ -1,6 +1,6 @@
-import React,{useState} from 'react';
+import React from 'react';
 import ReactDOM from "react-dom/client";
-import './toolbar.css';
+import './index.css';
 
 import { registerLicense } from "@syncfusion/ej2-base";
 import ToolbarItems from './component/ToolbarItems';

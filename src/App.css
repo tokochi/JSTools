@@ -9,75 +9,7 @@
   background: #2f2f2f;
 }
 
-.e-input-group:not(.e-float-icon-left),
-.e-input-group.e-success:not(.e-float-icon-left),
-.e-input-group.e-warning:not(.e-float-icon-left),
-.e-input-group.e-error:not(.e-float-icon-left),
-.e-input-group.e-control-wrapper:not(.e-float-icon-left),
-.e-input-group.e-control-wrapper.e-success:not(.e-float-icon-left),
-.e-input-group.e-control-wrapper.e-warning:not(.e-float-icon-left),
-.e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left) {
-  border: none;
-}
 
-.e-switch-wrapper .e-switch-on {
-  background-color: #3d9ef8 !important;
-  border-color: #23425b !important;
-}
-.e-switch-wrapper.custom-iOS .e-switch-inner.e-switch-active,
-.e-switch-wrapper.custom-iOS:hover .e-switch-inner.e-switch-active .e-switch-on {
-  background-color: #3d9ef8 !important;
-  border-color: #23425b !important;
-}
-
-.e-switch-wrapper.custom-iOS .e-switch-handle {
-  /* width: 20px;
-  height: 20px; */
-  background-color: #a5a5a5;
-}
-
-.e-switch-wrapper.custom-iOS .e-switch-handle.e-switch-active {
-  background-color: #ffffff;
-}
-.e-float-input input,
-.e-float-input textarea,
-.e-float-input.e-control-wrapper input,
-.e-float-input.e-control-wrapper textarea {
-  border: none !important;
-  border-width: 0 !important;
-}
-.e-schedule .e-appointment-details {
-  padding: 0 !important;
-}
-.e-schedule .e-vertical-view .e-day-wrapper .e-appointment {
-  background: transparent !important;
-  border: none !important;
-  width: 100% !important;
-}
-
-.e-schedule .e-vertical-view .e-day-wrapper {
-  width: 100% !important;
-}
-
-.e-grid td.e-active {
-  background-color: rgb(213, 230, 244) !important;
-}
-.e-toolbar .e-toolbar-items .e-toolbar-item .e-tbar-btn.e-btn:hover {
-  background-color: rgba(239, 246, 255) !important;
-  border-radius: 20px;
-}
-.e-list-parent .e-list-item.e-selected {
-  background-color: rgb(203, 206, 211) !important;
-}
-.e-edit-dialog .e-gridform .e-table {
-  border-spacing: 0 !important;
-}
-
-.e-grid .e-rowcell,
-.e-grid .e-headercell {
-  padding-left: 8px !important;
-  padding-right: 2px !important;
-}
 
 .e-treeview.e-fullrow-wrap .e-text-content {
   background-color: transparent !important;
