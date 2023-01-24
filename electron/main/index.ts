@@ -41,6 +41,7 @@ let ToolbarWindow: BrowserWindow | null = null;
 const preload = join(__dirname, '../preload/index.js')
 const url = process.env.VITE_DEV_SERVER_URL
 const indexHtml = join(process.env.DIST, 'index.html')
+const indexToolbar = join(process.env.DIST, "toolbar.html");
 
 async function createWindow() {
   win = new BrowserWindow({
@@ -109,8 +110,8 @@ app.on('activate', () => {
 
 function createToolbarWindow() {
   ToolbarWindow = new BrowserWindow({
-    // width: 70,
-    // height: 800,
+    width: 30,
+    height: 500,
     title: "JS Toolbar",
     alwaysOnTop: true,
     titleBarStyle: "hidden",
@@ -123,10 +124,10 @@ function createToolbarWindow() {
   });
 
   if (app.isPackaged) {
-    ToolbarWindow.loadFile(join(__dirname, "../../toolbar.html"));
+ToolbarWindow.loadFile(indexToolbar);
   } else {
     ToolbarWindow.loadURL(urlToolbar);
-    ToolbarWindow.webContents.openDevTools();
+   // ToolbarWindow.webContents.openDevTools();
   }
 }
 
@@ -138,7 +139,6 @@ ipcMain.on("drag", (event, data) => {
 });
 ipcMain.on("zoom-", (event, data) => {
   webFrame.setZoomLevel(data);
-  console.log(data);
 });
 ipcMain.on("reload", (event, data) => {
   win.reload();
@@ -148,7 +148,6 @@ ipcMain.on("reload", (event, data) => {
 });
 ipcMain.on("zoom+", (event, data) => {
   webFrame.setZoomLevel(1);
-  console.log(data);
 });
 ipcMain.on("minimize", (event, data) => {
   win.minimize();

@@ -16,6 +16,20 @@
     "build": "vite build && electron-builder"
   },
   "devDependencies": {
+    "eslint": "^8.32.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-plugin-import": "^2.27.4",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-react": "^7.32.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "babel-eslint": "^10.1.0",
+       "electron": "^22.0.0",
+    "electron-builder": "^23.6.0"
+  },
+  "engines": {
+    "node": "^14.18.0 || >=16.0.0"
+  },
+  "dependencies": {
     "@syncfusion/ej2": "^20.4.43",
     "@syncfusion/ej2-base": "^20.4.42",
     "@syncfusion/ej2-popups": "^20.4.43",
@@ -28,16 +42,7 @@
     "@types/react-dom": "^18.0.10",
     "@vitejs/plugin-react": "^3.0.0",
     "autoprefixer": "^10.4.13",
-    "babel-eslint": "^10.1.0",
-    "electron": "^22.0.0",
-    "electron-builder": "^23.6.0",
     "electron-store": "^8.1.0",
-    "eslint": "^8.32.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-import": "^2.27.4",
-    "eslint-plugin-jsx-a11y": "^6.7.1",
-    "eslint-plugin-react": "^7.32.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
     "postcss": "^8.4.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -46,12 +51,7 @@
     "vite": "^4.0.4",
     "vite-electron-plugin": "^0.7.3",
     "vite-plugin-electron-renderer": "^0.11.4",
-    "zustand": "^4.3.2"
-  },
-  "engines": {
-    "node": "^14.18.0 || >=16.0.0"
-  },
-  "dependencies": {
+    "zustand": "^4.3.2",
     "uuid": "^9.0.0"
   }
 }

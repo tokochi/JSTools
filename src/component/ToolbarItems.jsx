@@ -55,6 +55,7 @@ const ToolbarItems = () => {
     });
   }
   function contextMenuClick(args) {
+    
     switch (args.item.text) {
       case "Add":
         useStore.setState({ type: "Add Tool", dropdownOpen: true });

@@ -14,6 +14,10 @@ export default defineConfig(({ command }) => {
   const sourcemap = command === "serve" || !!process.env.VSCODE_DEBUG;
 
   return {
+
+
+
+    
     resolve: {
       alias: {
         "@": path.join(__dirname, "src"),
@@ -23,6 +27,8 @@ export default defineConfig(({ command }) => {
       react(),
       electron({
         include: ["electron"],
+
+
         transformOptions: {
           sourcemap,
         },

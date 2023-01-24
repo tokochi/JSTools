@@ -1,39 +1,12 @@
-::-webkit-scrollbar {
-  width: 5px;
-}
-::-webkit-scrollbar-thumb {
-  background: #334c53;
-  border-radius: 40px;
-}
-::-webkit-scrollbar-track {
-  background: #2f2f2f;
-}
-
-
-
-.e-treeview.e-fullrow-wrap .e-text-content {
-  background-color: transparent !important;
-  border: none;
-}
-.e-treeview .e-list-item.e-active > .e-fullrow {
-  background-color: transparent !important;
-  border: none;
-}
-.e-treeview .e-list-item.e-hover > .e-fullrow {
-  background-color: transparent !important;
-  border: none;
-}
 .e-listbox-wrapper,
 .e-list-item {
   border: none !important;
-  /* padding: 3px 0; */
   background-color: transparent !important;
   border-radius: 0;
 }
 .e-listbox-wrapper .e-list-parent, .e-listbox-container .e-list-parent {
     min-height: 0 !important;
 }
-
 
 .e-listbox-wrapper .e-list-item.e-selected {
   background: rgb(17, 24, 39) !important;

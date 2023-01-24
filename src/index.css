@@ -21,6 +21,18 @@ body {
 @tailwind components;
 @tailwind utilities;
 
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #334c53;
+  border-radius: 40px;
+}
+::-webkit-scrollbar-track {
+  background: #2f2f2f;
+}
+
 .user-nodrag {
   -webkit-user-drag: none;
   -webkit-app-region: no-drag;
