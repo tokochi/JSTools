@@ -6,18 +6,19 @@ import PopupDialog from "./PopupDialog";
 
 const Sidebar = () => {
   const data = useStore((state) => state.sidebarIcons);
+  const selectedItem = useStore((state) => state.selectedItem);
   let listboxRef = {};
-  const listBoxTemplate = ({ path, name, id }) => {
+  const listBoxTemplate = ({ path, name, id,type }) => {
     return (
-      <div className="flex flex-col items-center px-2">
+      <div className="flex flex-col items-center ">
         <img
           onContextMenu={(e) => {
-            e.preventDefault(), leftClickItem(name, id, path);
+            e.preventDefault(), leftClickItem(name, id, path, type);
           }}
           onClick={() => {
-            rightClickItem(name, id, path);
+            rightClickItem(name, id, path, type);
           }}
-          className="user-nodrag hover:scale-110 h-[40px] my-1 transition-all duration-300"
+          className="user-nodrag hover:scale-110 h-[45px] my-1 transition-all duration-300"
           src={path}
           alt={name}
         />
@@ -42,12 +43,12 @@ const Sidebar = () => {
   function droppingItem() {
     useStore.getState().setSidebarIcons(listboxRef.getDataList());
   }
-  function leftClickItem(name, id, path) {
-    useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idIcon: id, isSub: false, icon: name, path, type: "icon" } });
+  function leftClickItem(name, id, path, type) {
+    useStore.setState({ selectedItem: { ...selectedItem, idList: "", folder: "", idIcon: id, icon: name, path, type } });
   }
   // ********* contextMenu ************
-  function rightClickItem(name, id, path) {
-    useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idIcon: id, isSub: false, icon: name, path, type: "icon" } });
+  function rightClickItem(name, id, path, type) {
+    useStore.setState({ selectedItem: { ...selectedItem, idList: "", folder: "",  idIcon: id, icon: name, path, type } });
   }
   function contextMenuClick(args) {
     switch (args.item.text) {
@@ -64,7 +65,7 @@ const Sidebar = () => {
   }
   //  *********************************
   return (
-    <div className=" h-[calc(100vh_-_30px)] bg-[#202225] w-[60px] overflow-x-hidden shrink-0">
+    <div id="imgExample" className=" h-[calc(100vh_-_30px)] pl-1 bg-[#202225] w-[65px] overflow-y-scroll overflow-x-hidden shrink-0">
       <div className="" id="listbox-sidebar">
         <ListBoxComponent
           ref={(g) => (listboxRef = g)}

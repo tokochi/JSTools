@@ -2,16 +2,8 @@ import { app, BrowserWindow, shell, ipcMain, webFrame } from "electron";
 import { release } from 'node:os'
 import { join } from 'node:path'
 import Store from "electron-store";
-// The built directory structure
-//
-// ├─┬ dist-electron
-// │ ├─┬ main
-// │ │ └── index.js    > Electron-Main
-// │ └─┬ preload
-// │   └── index.js    > Preload-Scripts
-// ├─┬ dist
-// │ └── index.html    > Electron-Renderer
-//
+
+
 process.env.DIST_ELECTRON = join(__dirname, '../')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
 process.env.PUBLIC = process.env.VITE_DEV_SERVER_URL
@@ -66,7 +58,7 @@ async function createWindow() {
 
   if (process.env.VITE_DEV_SERVER_URL) { // electron-vite-vue#298
     win.loadURL(url)
-         win.webContents.openDevTools();
+        // win.webContents.openDevTools();
   } else {
     win.loadFile(indexHtml)
   }
@@ -115,6 +107,7 @@ function createToolbarWindow() {
     title: "JS Toolbar",
     alwaysOnTop: true,
     titleBarStyle: "hidden",
+    icon: join(process.env.PUBLIC, "favicon.ico"),
     backgroundColor: "#3c3c3c",
     webPreferences: {
       nodeIntegration: true,
@@ -130,34 +123,6 @@ ToolbarWindow.loadFile(indexToolbar);
    // ToolbarWindow.webContents.openDevTools();
   }
 }
-
-ipcMain.on("toolbar", (event, data) => {
-  createToolbarWindow();
-});
-ipcMain.on("drag", (event, data) => {
+ipcMain.on("reload", () => {
   win.reload();
 });
-ipcMain.on("zoom-", (event, data) => {
-  webFrame.setZoomLevel(data);
-});
-ipcMain.on("reload", (event, data) => {
-  win.reload();
-  try {
-    ToolbarWindow.reload();
-  } catch (error) {}
-});
-ipcMain.on("zoom+", (event, data) => {
-  webFrame.setZoomLevel(1);
-});
-ipcMain.on("minimize", (event, data) => {
-  win.minimize();
-});
-ipcMain.on("maximize", (event, data) => {
-  win.maximize();
-});
-ipcMain.on("close", (event, data) => {
-  win.close();
-});
-ipcMain.on("dev", (event, data) => {
-  win.webContents.openDevTools();
-}); 

@@ -1,5 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Exo:wght@500;600;700&family=Titillium+Web:wght@300;400;600&display=swap");
 @import "../node_modules/@syncfusion/ej2/material-dark.css";
+@font-face {
+  font-family: 'Titillium Web';
+  src: local('Titillium Web'), url(./fonts/TitilliumWeb-Regular.ttf) format('truetype');
+}
 *::before,
 *::after {
   box-sizing: border-box;
@@ -15,6 +18,8 @@ body {
   font-family: "Titillium Web";
   font-weight: "400";
   background: #3c3c3c;
+  /* overflow-x: hidden;
+  overflow-y: scroll; */
 }
 
 @tailwind base;
@@ -23,14 +28,14 @@ body {
 
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 7px;
 }
-::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb:hover {
   background: #334c53;
   border-radius: 40px;
 }
 ::-webkit-scrollbar-track {
-  background: #2f2f2f;
+  background: #202225;
 }
 
 .user-nodrag {

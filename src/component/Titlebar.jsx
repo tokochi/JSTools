@@ -1,4 +1,4 @@
-import  { useState } from "react";
+import { useState, useEffect } from "react";
 import plus from "../data/icons/plus.png"
 import minus from "../data/icons/minus.png"
 import reload from "../data/icons/restart.png"
@@ -8,6 +8,10 @@ const { webFrame } = require("electron");
 
 const Titlebar = () => {
   const [state, setstate] = useState(0);
+  useEffect(() => {
+    webFrame.setZoomLevel(state);
+  }, [state]);
+  
   return (
     <div className="w-full h-[30px] bg-[#202225] user-drag overflow-y-hidden shrink-0 flex gap-10 items-center">
       <span className="px-2 text-center text-xl text-gray-50 ">JS Tools</span>
@@ -16,7 +20,7 @@ const Titlebar = () => {
           className="h-[15px] hover:scale-110 transition-all duration-300 select-none"
           onClick={() => {
             setstate(state - 0.1);
-            webFrame.setZoomLevel(state);
+  
           }}
           src={minus}
           alt="zoomout"
@@ -24,8 +28,9 @@ const Titlebar = () => {
         <img
           className="h-[15px] hover:scale-110 transition-all duration-300 select-none"
           onClick={() => {
-            setstate(0);
-            webFrame.setZoomLevel(state);
+            setstate(0)
+            location.reload;
+            // ipcRenderer.send("reload");
           }}
           src={reload}
           alt="zoom"
@@ -34,7 +39,6 @@ const Titlebar = () => {
           className="h-[15px] hover:scale-110 transition-all duration-300 select-none"
           onClick={() => {
             setstate(state + 0.1);
-            webFrame.setZoomLevel(state);
           }}
           src={plus}
           alt="zoomin"

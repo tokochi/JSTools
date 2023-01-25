@@ -8,10 +8,10 @@ import PopupDialog from "./PopupDialog";
 
 const Listbox = () => {
   const selectedItem = useStore((state) => state.selectedItem);
-  const data = useStore((state) => state.sidebarIcons)?.find((item) => item.id === selectedItem.idIcon)?.listboxItems || [];
-  const selectedItemClicked = useStore((state) => state.selectedItem.icon !== "");
+  
+  const data = useStore((state) => state.listboxItems)?.filter((item) => item.idIcon === selectedItem.idIcon) || [];
+  const selectedItemClicked = useStore((state) => state.selectedItem.idIcon !== "");
   let listboxRef = {};
-
 
   const listBoxTemplate = ({ path, name, type, clip, tooltip, id }) => {
     return (
@@ -32,7 +32,7 @@ const Listbox = () => {
               onClick={() => {
                 rightClickItem(name, type, clip, tooltip, id);
               }}
-              className='flex active:bg-green-600  hover:bg-slate-700 gap-2 items-center px-2 py-1 transition-colors ease'
+              className="flex active:bg-green-600  hover:bg-slate-700 gap-2 items-center px-2 py-1 transition-colors ease"
             >
               <img
                 onContextMenu={(e) => {
@@ -106,23 +106,23 @@ const Listbox = () => {
   }
   function leftClickItem(name, type, clip, tooltip, id) {
     if (type === "folder") {
-      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: true, name, folder: name, type } });
+      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, name, folder: name, type } });
     }
     if (type === "clip") {
       navigator.clipboard.writeText(clip);
       useStore.setState({
-        selectedItem: { ...useStore.getState().selectedItem, isSub: false, idList: id, name, clip, clipName: name, tooltip, type },
+        selectedItem: { ...useStore.getState().selectedItem, idList: id, folder: "", name, clip, clipName: name, tooltip, type },
       });
     }
   }
   // ********* contextMenu ************
   function rightClickItem(name, type, clip, tooltip, id) {
     if (type === "folder") {
-      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: true, name, folder: name, type } });
+      useStore.setState({ selectedItem: { ...useStore.getState().selectedItem, idList: id, name, folder: name, type } });
     }
     if (type === "clip") {
       useStore.setState({
-        selectedItem: { ...useStore.getState().selectedItem, idList: id, isSub: false, name, clipName: name, clip, tooltip, type },
+        selectedItem: { ...useStore.getState().selectedItem, idList: id,folder:"", name, clipName: name, clip, tooltip, type },
       });
     }
   }

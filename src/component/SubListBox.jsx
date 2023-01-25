@@ -7,16 +7,13 @@ import PopupDialog from "./PopupDialog";
 
 const SubListBox = () => {
   const selectedItem = useStore((state) => state.selectedItem);
-  const data =
-    useStore((state) => state.sidebarIcons)
-      ?.find((item) => item.id === selectedItem.idIcon)
-      ?.listboxItems?.find((folder) => folder.id === selectedItem.idList)?.subList || [];
-  const selectedItemClicked = selectedItem.isSub === true;
+  const data = useStore((state) => state.subListboxItems)?.filter((item) => item.idList === selectedItem.idList) || [];
+  const selectedItemClicked = useStore((state) => state.selectedItem.idList !== "" && state.selectedItem.folder !== "");
   let listboxRef = {};
   const listBoxTemplate = ({ path, name, type, clip, tooltip, id }) => {
     return (
       <>
-        {tooltip.length > 0 ? (
+        {tooltip?.length > 0 ? (
           <TooltipComponent
             content={tooltip}
             animation={{
@@ -32,7 +29,7 @@ const SubListBox = () => {
               onClick={() => {
                 rightClickItem(name, type, clip, tooltip, id);
               }}
-              className="flex gap-2 items-center px-2 py-1 hover:bg-slate-700"
+              className="flex gap-2 items-center active:bg-green-600 px-2 py-1 hover:bg-slate-700"
             >
               <img
                 onContextMenu={(e) => {
@@ -106,13 +103,13 @@ const SubListBox = () => {
   }
   function leftClickItem(name, type, clip, tooltip, id) {
     useStore.setState({
-      selectedItem: { ...useStore.getState().selectedItem, idSubList: id, isSub: true, name, clip, clipName: name, tooltip, type },
+      selectedItem: { ...useStore.getState().selectedItem, idSubList: id, name, clip, clipName: name, tooltip, type },
     });
   }
   // ********* contextMenu ************
   function rightClickItem(name, type, clip, tooltip, id) {
     useStore.setState({
-      selectedItem: { ...useStore.getState().selectedItem, idSubList: id, isSub: true, name, clip, clipName: name, tooltip, type },
+      selectedItem: { ...useStore.getState().selectedItem, idSubList: id, name, clip, clipName: name, tooltip, type },
     });
   }
   function contextMenuClick(args) {

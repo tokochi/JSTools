@@ -10,14 +10,21 @@ export default function PopupDialog() {
   const dropdownOpen = useStore((state) => state.dropdownOpen);
   const editType = useStore((state) => state.type);
   const { idIcon, idList, idSubList, idTool, icon, folder, path, clip, clipName, tooltip } = useStore((state) => state.selectedItem);
-  const listboxItems = useStore((state) => state.sidebarIcons)?.find((item) => item.id === idIcon)?.listboxItems;
-  const listSubBoxItems = useStore((state) => state.sidebarIcons);
+  const sidebarIcons = useStore((state) => state.sidebarIcons);
+  const listboxItems = useStore((state) => state.listboxItems);
+  const subListboxItems = useStore((state) => state.subListboxItems);
+  const toolbarItems = useStore((state) => state.toolbarItems);
+  const updateSidebarIcons = useStore((state) => state.updateSidebarIcons);
+  const updateSubListboxItems = useStore((state) => state.updateSubListboxItems);
+  const updateListboxItems = useStore((state) => state.updateListboxItems);
+  const updateToolbarItems = useStore((state) => state.updateToolbarItems);
   const [newIcon, setNewIcon] = useState("");
   const [newFolder, setNewFolder] = useState("");
   const [newClipName, setNewClipName] = useState("");
   const [newClip, setNewClip] = useState("");
   const [newTooltip, setNewTooltip] = useState("");
   const [newPath, setNewPath] = useState(null);
+  // *********** Get last Selected Items values ************
   useEffect(() => {
     setNewIcon(icon);
     setNewPath(path);
@@ -29,135 +36,129 @@ export default function PopupDialog() {
   // *********** CRUD functions ************
   function addIcon() {
     useStore.setState({ dropdownOpen: false });
-    store?.set("sidebarIcons", [...store?.get("sidebarIcons"), { id: uuidv4(), name: newIcon, path: newPath, listboxItems: [] }]);
+    store?.set("sidebarIcons", [...sidebarIcons, { id: uuidv4(), name: newIcon, path: newPath, type: "icon" }]);
     useStore.getState().updateSidebarIcons();
   }
   function editIcon() {
     useStore.setState({ dropdownOpen: false });
-    const newArray = store
-      ?.get("sidebarIcons")
-      .map((item) => (item.id === idIcon && newPath !== null ? { ...item, name: newIcon, path: newPath } : item));
+    const newArray = sidebarIcons.map((icon) => (icon.id === idIcon && newPath !== null ? { ...icon, name: newIcon, path: newPath } : icon));
     store?.set("sidebarIcons", newArray);
-    useStore.getState().updateSidebarIcons();
+    updateSidebarIcons();
   }
   function removeIcon() {
     useStore.setState({ dropdownOpen: false });
     store?.set(
       "sidebarIcons",
-      store?.get("sidebarIcons").filter((item) => item.id !== idIcon)
+      sidebarIcons.filter((icon) => icon.id !== idIcon)
     );
-    useStore.getState().updateSidebarIcons();
+    listboxItems.forEach((folder) => {
+      if (folder.idIcon === idIcon && folder.type === "folder") {
+        store?.set(
+          "subListboxItems",
+          store?.get("subListboxItems").filter((sub) => sub.idList !== folder.id)
+        );
+      }
+    });
+    store?.set(
+      "listboxItems",
+      listboxItems.filter((folder) => folder.idIcon !== idIcon)
+    );
+    updateSubListboxItems();
+    updateListboxItems();
+    updateSidebarIcons();
   }
   function addFolder() {
+    // console.log("addFolder", { id: uuidv4(), type: "folder", name: newFolder, idIcon });
+
     useStore.setState({ dropdownOpen: false });
-    const listboxItem = store?.get("sidebarIcons").find((icons) => icons.id === idIcon).listboxItems;
-    listboxItem.push({ id: uuidv4(), type: "folder", name: newFolder, subList: [] });
-    store?.set(
-      "sidebarIcons",
-      store?.get("sidebarIcons").map((icons) => (icons.id === idIcon ? { ...icons, listboxItems: listboxItem } : icons))
-    );
-    useStore.getState().updateSidebarIcons();
+    store?.set("listboxItems", [...listboxItems, { id: uuidv4(), type: "folder", name: newFolder, idIcon }]);
+    updateListboxItems();
   }
   function editFolder() {
     useStore.setState({ dropdownOpen: false });
-    const listboxItem = listboxItems.map((item) => (item.id === idList && item.type === "folder" ? { ...item, name: newFolder } : item));
-    const newArray = store?.get("sidebarIcons").map((item) => (item.id === idIcon ? { ...item, listboxItems: [...listboxItem] } : item));
-    store?.set("sidebarIcons", newArray);
-    useStore.getState().updateSidebarIcons();
+    const listboxItem = listboxItems;
+    const newArray = listboxItem.map((folder) => (folder.id === idList ? { ...folder, name: newFolder } : folder));
+    store?.set("listboxItems", newArray);
+    updateListboxItems();
   }
   function addClip() {
     useStore.setState({ dropdownOpen: false });
     if (editType === "Add ClipBoard") {
-      const listboxItem = store?.get("sidebarIcons").find((icons) => icons.id === idIcon).listboxItems;
-      listboxItem.push({ id: uuidv4(), type: "clip", name: newClipName, clip: newClip, tooltip: newTooltip, path: newPath });
-      store?.set(
-        "sidebarIcons",
-        store?.get("sidebarIcons").map((icons) => (icons.id === idIcon ? { ...icons, listboxItems: listboxItem } : icons))
-      );
-      useStore.getState().updateSidebarIcons();
+      store?.set("listboxItems", [
+        ...listboxItems,
+        { id: uuidv4(), type: "clip", idIcon, name: newClipName, clip: newClip, tooltip: newTooltip, path: newPath },
+      ]);
+      updateListboxItems();
     }
     if (editType === "Add Sub ClipBoard") {
-      const listSubBoxItem = store
-        ?.get("sidebarIcons")
-        ?.find((item) => item.id === idIcon)
-        ?.listboxItems?.find((folder) => folder.id === idList)?.subList;
-      listSubBoxItem.push({ id: uuidv4(), type: "clip", name: newClipName, clip: newClip, tooltip: newTooltip, path: newPath });
-      store?.set(
-        "sidebarIcons",
-        store?.get("sidebarIcons").map((icons) =>
-          icons.id === idIcon
-            ? {
-                ...icons,
-                listboxItems: icons.listboxItems.map((folder) => (folder.id === idList ? { ...folder, subList: listSubBoxItem } : folder)),
-              }
-            : icons
-        )
-      );
-      useStore.getState().updateSidebarIcons();
+      store?.set("subListboxItems", [
+        ...subListboxItems,
+        { id: uuidv4(), type: "clip", idList, name: newClipName, clip: newClip, tooltip: newTooltip, path: newPath },
+      ]);
+      useStore.getState().updateSubListboxItems();
     }
     if (editType === "Add Tool") {
-      store?.set("toolbarItems", [...store?.get("toolbarItems"), { id: uuidv4(), type: "clip", name: newClipName, clip: newClip, path: newPath }]);
+      store?.set("toolbarItems", [...toolbarItems, { id: uuidv4(), type: "clip", name: newClipName, clip: newClip, path: newPath }]);
       useStore.getState().updateToolbarItems();
     }
   }
   function editClip() {
     useStore.setState({ dropdownOpen: false });
-    if (editType === "Edit Sub ClipBoard") {
-      const listSubboxItem = listSubBoxItems.map((clip) =>
-        clip.id === idSubList ? { ...clip, name: newClipName, clip: newClip, tooltip: newTooltip } : clip
-      );
-      const newArray = store
-        ?.get("sidebarIcons")
-        .map((icons) =>
-          icons.id === idIcon
-            ? { ...icons, listboxItems: icons.listboxItems.map((folder) => (folder.id === idList ? { ...folder, subList: listSubboxItem } : folder)) }
-            : icons
-        );
-      store?.set("sidebarIcons", newArray);
-    }
     if (editType === "Edit ClipBoard") {
-      const listboxItem = listboxItems.map((item) =>
-        item.id === idList && item.type === "clip" ? { ...item, name: newClipName, clip: newClip, tooltip: newTooltip } : item
+      const newArray = listboxItems.map((item) => (item.id === idList ? { ...item, name: newClipName, clip: newClip, tooltip: newTooltip } : item));
+      store?.set("listboxItems", newArray);
+      useStore.getState().updateListboxItems();
+    }
+    if (editType === "Edit Sub ClipBoard") {
+      const newArray = subListboxItems.map((item) =>
+        item.id === idSubList ? { ...item, name: newClipName, clip: newClip, tooltip: newTooltip } : item
       );
-      const newArray = store?.get("sidebarIcons").map((item) => (item.id === idIcon ? { ...item, listboxItems: [...listboxItem] } : item));
-      store?.set("sidebarIcons", newArray);
+      store?.set("subListboxItems", newArray);
+      useStore.getState().updateSubListboxItems();
     }
     if (editType === "Edit Tool") {
-      const newArray = store
-        ?.get("toolbarItems")
-        .map((tool) => (tool.id === idTool && newPath !== null ? { ...tool, name: newClipName, clip: newClip, path: newPath } : tool));
+      const newArray = toolbarItems.map((tool) =>
+        tool.id === idTool && newPath !== null ? { ...tool, name: newClipName, clip: newClip, path: newPath } : tool
+      );
       store?.set("toolbarItems", newArray);
       useStore.getState().updateToolbarItems();
-
     }
-    useStore.getState().updateSidebarIcons();
+    updateSidebarIcons();
   }
   function removeFolder() {
     useStore.setState({ dropdownOpen: false });
     if (editType === "Remove Sub ClipBoard") {
-      const listSubboxItem = listSubBoxItems.filter((clip) => clip.id !== idSubList);
-      const newArray = store
-        ?.get("sidebarIcons")
-        .map((icons) =>
-          icons.id === idIcon
-            ? { ...icons, listboxItems: icons.listboxItems.map((folder) => (folder.id === idList ? { ...folder, subList: listSubboxItem } : folder)) }
-            : icons
-        );
-      store?.set("sidebarIcons", newArray);
-      useStore.getState().updateSidebarIcons();
+      store?.set(
+        "subListboxItems",
+        subListboxItems.filter((item) => item.id !== idSubList)
+      );
+      updateSubListboxItems();
     }
     if (editType === "Remove ClipBoard") {
-      const listboxItem = listboxItems.filter((item) => item.id !== idList);
-      const newArray = store?.get("sidebarIcons").map((item) => (item.id === idIcon ? { ...item, listboxItems: [...listboxItem] } : item));
-      store?.set("sidebarIcons", newArray);
-      useStore.getState().updateSidebarIcons();
+      store?.set(
+        "listboxItems",
+        listboxItems.filter((item) => item.id !== idList)
+      );
+      updateListboxItems();
+    }
+    if (editType === "Remove Folder") {
+      store?.set(
+        "listboxItems",
+        listboxItems.filter((item) => item.id !== idList)
+      );
+      store?.set(
+        "subListboxItems",
+        subListboxItems.filter((item) => item.idList !== idList)
+      );
+      updateListboxItems();
+      updateSubListboxItems();
     }
     if (editType === "Remove Tool") {
       store?.set(
         "toolbarItems",
-        store?.get("toolbarItems").filter((tool) => tool.id !== idTool)
+        toolbarItems.filter((icon) => icon.id !== idTool)
       );
-      useStore.getState().updateToolbarItems();
+      updateToolbarItems();
     }
   }
   return (
@@ -443,6 +444,9 @@ export default function PopupDialog() {
                           removeFolder();
                           break;
                         case "Remove Tool":
+                          removeFolder();
+                          break;
+                        case "Remove Sub ClipBoard":
                           removeFolder();
                           break;
                       }
