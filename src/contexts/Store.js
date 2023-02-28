@@ -10,13 +10,13 @@ if (store?.get("sidebarIcons") == null) {
   const idIcon = uuidv4();
   const idList = uuidv4();
   store?.set("sidebarIcons", [{ id: idIcon, name: "", path: add, type: "icon" }]);
-  store?.set("listboxItems", [{ id: idList, idIcon, name: "",tooltip:"",clip:"", path: add, type: "clip" }]);
+  store?.set("listboxItems", [{ id: idList, idIcon, name: "", tooltip: "", clip: "", path: add, type: "clip" }]);
   store?.set("subListboxItems", [{ id: uuidv4(), idList, name: "", tooltip: "", clip: "", path: add, type: "clip" }]);
-} 
+}
 if (store?.get("toolbarItems") == null) {
-  store?.set("toolbarItems", [{ id: uuidv4(),type: "clip", name: "new", path: add}]);
-} 
-export const useStore = create((set) => ({
+  store?.set("toolbarItems", [{ id: uuidv4(), type: "clip", name: "new", path: add }]);
+}
+export const useStore = create((set, get) => ({
   sidebarIcons: store?.get("sidebarIcons"),
   listboxItems: store?.get("listboxItems"),
   subListboxItems: store?.get("subListboxItems"),
@@ -26,8 +26,20 @@ export const useStore = create((set) => ({
   updateSubListboxItems: () => set(() => ({ subListboxItems: store?.get("subListboxItems") })),
   updateToolbarItems: () => set(() => ({ toolbarItems: store?.get("toolbarItems") })),
   setSidebarIcons: (list) => store?.set("sidebarIcons", list),
-  setListboxItems: (list) => store?.set("listboxItems", list),
-  setSubListboxItems: (list) => store?.set("subListboxItems", list),
+  setListboxItems: (list) => {
+    store?.set(
+      "listboxItems",
+      [...new Set(list.concat(get().listboxItems).map((x) => JSON.stringify(x)))].map((x) => JSON.parse(x))
+    );
+    set(() => ({ listboxItems: store?.get("listboxItems") }));
+  },
+  setSubListboxItems: (list) => {
+    store?.set(
+      "subListboxItems",
+      [...new Set(list.concat(get().subListboxItems).map((x) => JSON.stringify(x)))].map((x) => JSON.parse(x))
+    );
+    set(() => ({ subListboxItems: store?.get("subListboxItems") }));
+  },
   setToolbarItems: (list) => store?.set("toolbarItems", list),
   selectedItem: {
     idIcon: "",
@@ -44,5 +56,6 @@ export const useStore = create((set) => ({
     tooltip: "",
   },
   dropdownOpen: false,
+  tooltipVisible: true,
   type: "",
 }));

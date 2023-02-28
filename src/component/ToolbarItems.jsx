@@ -8,7 +8,7 @@ const ToolbarItems = () => {
   let listboxRef = {};
   const listBoxTemplate = ({ path, name, clip, id }) => {
     return (
-      <div className={`flex  items-center px-1`}>
+      <div className='flex items-center m-[2px] border border-gray-800 active:bg-slate-600'>
         <img
           onContextMenu={(e) => {
             e.preventDefault(), leftClickItem(name, clip, id);
@@ -18,7 +18,7 @@ const ToolbarItems = () => {
             navigator.clipboard.writeText(clip);
           }}
           id={id}
-          className="user-nodrag max-w-[60px] min-w-[5px]"
+          className='user-nodrag max-w-[60px] min-w-[5px] active:opacity-80'
           src={path}
           alt={name}
         />
@@ -72,7 +72,7 @@ const ToolbarItems = () => {
 
   return (
     <>
-      <div className=" h-screen bg-[#202225] w-screen overflow-x-hidden ">
+      <div className=" h-screen bg-[#202225] w-screen overflow-hidden ">
         <div className="text-slate-400 text-xl text-center user-drag cursor-wait">
           ⋮⋮⋮⋮⋮
         </div>

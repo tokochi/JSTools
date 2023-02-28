@@ -15,7 +15,8 @@ module.exports = {
   },
   plugins: ["react"],
   rules: {
+    "react/no-unknown-property": "off",
     "react/react-in-jsx-scope": "off",
-   // semi: [2, "always"],
+    // semi: [2, "always"],
   },
 };

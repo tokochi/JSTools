@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unknown-property */
 import { ListBoxComponent } from "@syncfusion/ej2-react-dropdowns";
 import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
@@ -16,11 +15,12 @@ const SubListBox = () => {
         {tooltip?.length > 0 ? (
           <TooltipComponent
             content={tooltip}
+            disabled={true}
             animation={{
               open: { effect: "ZoomIn", duration: 200 },
               close: { effect: "ZoomOut", duration: 0 },
             }}
-            position="RightCenter"
+            position='RightCenter'
           >
             <div
               onContextMenu={(e) => {
@@ -29,7 +29,7 @@ const SubListBox = () => {
               onClick={() => {
                 rightClickItem(name, type, clip, tooltip, id);
               }}
-              className="flex gap-2 items-center active:bg-green-600 px-2 py-1 hover:bg-slate-700"
+              className='flex gap-2 items-center active:bg-green-600 px-2 py-[1px] hover:bg-slate-700'
             >
               <img
                 onContextMenu={(e) => {
@@ -40,7 +40,7 @@ const SubListBox = () => {
                   navigator.clipboard.writeText(clip);
                 }}
                 id={id}
-                className="user-nodrag h-[20px]"
+                className='user-nodrag h-[20px]'
                 src={path}
                 alt={name}
               />
@@ -52,7 +52,7 @@ const SubListBox = () => {
                   rightClickItem(name, type, clip, tooltip, id);
                   navigator.clipboard.writeText(clip);
                 }}
-                className="text-base capitalize"
+                className='text-base capitalize'
               >
                 {name}
               </span>
@@ -66,7 +66,7 @@ const SubListBox = () => {
             onClick={() => {
               rightClickItem(name, type, clip, tooltip, id);
             }}
-            className="flex gap-2 items-center px-2 hover:bg-slate-700"
+            className='flex gap-2 items-center px-2 hover:bg-slate-700'
           >
             <img
               onContextMenu={(e) => {
@@ -76,7 +76,7 @@ const SubListBox = () => {
                 rightClickItem(name, type, clip, tooltip, id);
               }}
               id={id}
-              className=".user-nodrag h-[20px]"
+              className='.user-nodrag h-[20px]'
               src={path}
               alt={name}
             />
@@ -88,7 +88,7 @@ const SubListBox = () => {
                 rightClickItem(name, type, clip, tooltip, id);
                 navigator.clipboard.writeText(clip);
               }}
-              className="text-base capitalize"
+              className='text-base capitalize'
             >
               {name}
             </span>
@@ -99,7 +99,7 @@ const SubListBox = () => {
   };
   // ********* Drag & Drop  ************
   function droppingItem() {
-    useStore.getState().setSidebarSubList(listboxRef.getDataList(), selectedItem.idIcon, selectedItem.idList);
+    useStore.getState().setSubListboxItems(listboxRef.getDataList());
   }
   function leftClickItem(name, type, clip, tooltip, id) {
     useStore.setState({
@@ -141,13 +141,13 @@ const SubListBox = () => {
   ];
   // *********************************
   return (
-    <div className="shrink-0">
+    <div className='shrink-0'>
       {selectedItemClicked && (
         <div>
-          <div className="bg-[#2f3136] h-max  overflow-x-hidden" id="listbox2-control">
+          <div className='bg-[#2f3136] max-h-[calc(100vh_-_30px)]  overflow-y-scroll overflow-x-hidden' id='listbox2-control'>
             <ListBoxComponent
               ref={(g) => (listboxRef = g)}
-              id="sublistbox"
+              id='sublistbox'
               dataSource={data}
               fields={{ value: "name", text: "name" }}
               allowDragAndDrop
@@ -155,9 +155,9 @@ const SubListBox = () => {
               drop={droppingItem}
             />
           </div>
-          <div id="contextmenu-listbox">
+          <div id='contextmenu-listbox'>
             <ContextMenuComponent
-              target="#listbox2-control"
+              target='#listbox2-control'
               items={menuItems}
               select={contextMenuClick}
               animationSettings={{ duration: 500, effect: "FadeIn" }}

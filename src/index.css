@@ -17,6 +17,7 @@ body {
   padding: 0;
   font-family: "Titillium Web";
   font-weight: "400";
+
   background: #3c3c3c;
   /* overflow-x: hidden;
   overflow-y: scroll; */
@@ -35,7 +36,7 @@ body {
   border-radius: 40px;
 }
 ::-webkit-scrollbar-track {
-  background: #202225;
+  background: inherit;
 }
 
 .user-nodrag {
@@ -50,6 +51,7 @@ body {
   border: none !important;
   background-color: transparent !important;
   border-radius: 0;
+  color:rgb(214, 213, 213) !important;
 }
 .e-listbox-wrapper .e-list-parent, .e-listbox-container .e-list-parent {
     min-height: 0 !important;

@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unknown-property */
 import { ListBoxComponent } from "@syncfusion/ej2-react-dropdowns";
 import { ContextMenuComponent } from "@syncfusion/ej2-react-navigations";
 import { TooltipComponent } from "@syncfusion/ej2-react-popups";
@@ -8,7 +7,6 @@ import PopupDialog from "./PopupDialog";
 
 const Listbox = () => {
   const selectedItem = useStore((state) => state.selectedItem);
-  
   const data = useStore((state) => state.listboxItems)?.filter((item) => item.idIcon === selectedItem.idIcon) || [];
   const selectedItemClicked = useStore((state) => state.selectedItem.idIcon !== "");
   let listboxRef = {};
@@ -19,11 +17,12 @@ const Listbox = () => {
         {type === "clip" && tooltip.length > 0 ? (
           <TooltipComponent
             content={tooltip}
+            width='800'
             animation={{
               open: { effect: "ZoomIn", duration: 200 },
               close: { effect: "ZoomOut", duration: 0 },
             }}
-            position="RightCenter"
+            position='RightCenter'
           >
             <div
               onContextMenu={(e) => {
@@ -32,7 +31,7 @@ const Listbox = () => {
               onClick={() => {
                 rightClickItem(name, type, clip, tooltip, id);
               }}
-              className="flex active:bg-green-600  hover:bg-slate-700 gap-2 items-center px-2 py-1 transition-colors ease"
+              className='flex active:bg-green-600  hover:bg-slate-700 gap-2 items-center px-2  transition-colors ease'
             >
               <img
                 onContextMenu={(e) => {
@@ -42,7 +41,7 @@ const Listbox = () => {
                   rightClickItem(name, type, clip, tooltip, id);
                 }}
                 id={id}
-                className="user-nodrag  h-[20px]"
+                className='user-nodrag  h-[20px]'
                 src={type === "folder" ? folder : path}
                 alt={name}
               />
@@ -54,7 +53,7 @@ const Listbox = () => {
                   rightClickItem(name, type, clip, tooltip, id);
                   navigator.clipboard.writeText(clip);
                 }}
-                className="text-base  capitalize"
+                className='text-base  capitalize'
               >
                 {name}
               </span>
@@ -68,7 +67,7 @@ const Listbox = () => {
             onClick={() => {
               rightClickItem(name, type, clip, tooltip, id);
             }}
-            className="flex gap-2 items-center px-2 py-1 hover:bg-slate-700"
+            className='flex gap-2 items-center px-2 py-[1px] hover:bg-slate-700'
           >
             <img
               onContextMenu={(e) => {
@@ -78,7 +77,7 @@ const Listbox = () => {
                 rightClickItem(name, type, clip, tooltip, id);
               }}
               id={id}
-              className=".user-nodrag h-[20px]"
+              className='.user-nodrag h-[20px]'
               src={type === "folder" ? folder : path}
               alt={name}
             />
@@ -91,7 +90,7 @@ const Listbox = () => {
                 rightClickItem(name, type, clip, tooltip, id);
                 navigator.clipboard.writeText(clip);
               }}
-              className="text-base capitalize"
+              className='text-base capitalize'
             >
               {name}
             </span>
@@ -102,7 +101,7 @@ const Listbox = () => {
   };
   // ********* Drag & Drop  ************
   function droppingItem() {
-    useStore.getState().setSidebarList(listboxRef.getDataList(), selectedItem.idIcon);
+    useStore.getState().setListboxItems(listboxRef.getDataList());
   }
   function leftClickItem(name, type, clip, tooltip, id) {
     if (type === "folder") {
@@ -122,7 +121,7 @@ const Listbox = () => {
     }
     if (type === "clip") {
       useStore.setState({
-        selectedItem: { ...useStore.getState().selectedItem, idList: id,folder:"", name, clipName: name, clip, tooltip, type },
+        selectedItem: { ...useStore.getState().selectedItem, idList: id, folder: "", name, clipName: name, clip, tooltip, type },
       });
     }
   }
@@ -172,13 +171,13 @@ const Listbox = () => {
   ];
   //  *********************************
   return (
-    <div className="shrink-0">
+    <div className='shrink-0'>
       {selectedItemClicked && (
         <div>
-          <div className="bg-[#2f3136] h-max  overflow-x-hidden" id="listbox-control">
+          <div className='bg-[#2f3136] max-h-[calc(100vh_-_30px)]  overflow-y-scroll overflow-x-hidden' id='listbox-control'>
             <ListBoxComponent
               ref={(g) => (listboxRef = g)}
-              id="listbox"
+              id='listbox'
               dataSource={data}
               fields={{ value: "name", text: "name" }}
               allowDragAndDrop
@@ -186,9 +185,9 @@ const Listbox = () => {
               drop={droppingItem}
             />
           </div>
-          <div id="contextmenu-listbox">
+          <div id='contextmenu-listbox'>
             <ContextMenuComponent
-              target="#listbox-control"
+              target='#listbox-control'
               items={menuItems}
               select={contextMenuClick}
               animationSettings={{ duration: 500, effect: "FadeIn" }}

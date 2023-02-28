@@ -1,6 +1,6 @@
 /* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react/prop-types */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useStore } from "../contexts/Store";
 import Store from "electron-store";
 import { v4 as uuidv4 } from "uuid";
@@ -68,7 +68,6 @@ export default function PopupDialog() {
     updateSidebarIcons();
   }
   function addFolder() {
-    // console.log("addFolder", { id: uuidv4(), type: "folder", name: newFolder, idIcon });
 
     useStore.setState({ dropdownOpen: false });
     store?.set("listboxItems", [...listboxItems, { id: uuidv4(), type: "folder", name: newFolder, idIcon }]);

@@ -20,16 +20,17 @@
 .e-tooltip-wrap {
   opacity: 1 !important;
   border: none !important;
+  max-width: 400px !important;
 }
 .e-tooltip-wrap .e-tip-content {
-  color: rgb(214, 214, 214) !important;
+  color: rgb(203, 203, 203) !important;
   font-size: 14px !important;
   font-family: Titillium Web !important;
   font-weight: 500!important;
   line-height: 20px !important;
   border: none !important;
   padding: 4px !important;
-  text-align: center !important;
+  text-align: left !important;
  
 }
 .e-tooltip-wrap.e-popup {
@@ -47,6 +48,12 @@
   border: none !important;
   color: rgb(17, 24, 39) !important;
 }
-
+pre{
+  padding: 8px !important;
+  border-radius: 20%;
+  color: darkgray;
+  background-color: rgb(22, 27, 34);
+  font-weight: 300;
+}
 
 
