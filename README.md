@@ -6,9 +6,9 @@ A simple Tool App that help me memorise all code snippets, config files, command
 
 ## Some Screens
 
-![demo](https://github.com/tokochi/JSTools/blob/master/img/01.png)
+![demo](https://github.com/tokochi/JSTools/blob/master/img/01.gif)
 
-![Add-folder](https://github.com/tokochi/JSTools/blob/master/img/02.png)
+![Add-folder](https://github.com/tokochi/JSTools/blob/master/img/02.gif)
 
 ## About this Project
 
